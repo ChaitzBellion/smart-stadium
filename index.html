@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Stadium Operations | FIFA World Cup 2026</title>
+    <meta name="description" content="GenAI-powered stadium operations and fan experience for FIFA World Cup 2026">
+    
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+</head>
+<body class="theme-dark">
+    <!-- Accessibility Skip Link -->
+    <a href="#main-content-area" class="skip-link">Skip to main content</a>
+
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" aria-label="Main Navigation">
+            <div class="sidebar-logo">
+                <span class="logo-icon" aria-hidden="true">⚽</span>
+                <div class="logo-text">
+                    <span class="logo-title">FIFA 26</span>
+                    <span class="logo-subtitle">Smart Stadium Ops</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item nav-item--active" data-page="dashboard" aria-label="Go to Dashboard">
+                    <span class="nav-icon" aria-hidden="true">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="#ai-assistant" class="nav-item" data-page="ai-assistant" aria-label="Go to AI Assistant">
+                    <span class="nav-icon" aria-hidden="true">🤖</span>
+                    <span class="nav-text">AI Assistant</span>
+                </a>
+                <a href="#match-center" class="nav-item" data-page="match-center" aria-label="Go to Match Center">
+                    <span class="nav-icon" aria-hidden="true">🏟️</span>
+                    <span class="nav-text">Match Center</span>
+                </a>
+                <a href="#crowd-analytics" class="nav-item" data-page="crowd-analytics" aria-label="Go to Crowd Analytics">
+                    <span class="nav-icon" aria-hidden="true">👥</span>
+                    <span class="nav-text">Crowd Analytics</span>
+                </a>
+                <a href="#venue-ops" class="nav-item" data-page="venue-ops" aria-label="Go to Venue Operations">
+                    <span class="nav-icon" aria-hidden="true">⚙️</span>
+                    <span class="nav-text">Venue Ops</span>
+                </a>
+                <a href="#fan-experience" class="nav-item" data-page="fan-experience" aria-label="Go to Fan Experience">
+                    <span class="nav-icon" aria-hidden="true">🌟</span>
+                    <span class="nav-text">Fan Experience</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Mobile Header -->
+            <header class="mobile-header">
+                <button class="sidebar-toggle btn btn--ghost" aria-label="Toggle Navigation Menu">
+                    <span aria-hidden="true">☰</span>
+                </button>
+                <div class="mobile-logo">FIFA 26 Ops</div>
+            </header>
+
+            <!-- Dynamic Module Container -->
+            <div id="main-content-area" class="module-container" tabindex="-1">
+                <!-- Modules will be loaded here dynamically -->
+                <div class="skeleton" style="height: 200px; margin-bottom: 20px;"></div>
+                <div class="grid-4" style="gap: 20px; margin-bottom: 20px;">
+                    <div class="skeleton" style="height: 120px;"></div>
+                    <div class="skeleton" style="height: 120px;"></div>
+                    <div class="skeleton" style="height: 120px;"></div>
+                    <div class="skeleton" style="height: 120px;"></div>
+                </div>
+                <div class="skeleton" style="height: 400px;"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Live Region for Screen Readers -->
+    <div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Scripts (ES Modules) -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
