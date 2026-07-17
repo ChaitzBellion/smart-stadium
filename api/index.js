@@ -32,7 +32,8 @@ app.post('/api/chat', async (req, res) => {
       return res.status(500).json({ error: 'GEMINI_API_KEY is not configured in environment' });
     }
 
-    const modelName = process.env.GEMINI_MODEL || 'gemini-1.5-pro';
+    // Default to an older Gemini model that is generally available to new users.
+    const modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
     const result = await ai.models.generateContent({
       model: modelName,
       contents: prompt,
