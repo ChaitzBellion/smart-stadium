@@ -84,6 +84,22 @@ function createApp({ apiKey = process.env.GEMINI_API_KEY, geminiModel = process.
     }
   });
 
+  app.get('/api/models', async (req, res) => {
+    if (!apiKey) {
+      return res.status(500).json({ error: 'GEMINI_API_KEY is not configured in environment' });
+    }
+
+    try {
+      const listResponse = await ai.models.listModels();
+      const models = Array.isArray(listResponse.models) ? listResponse.models : listResponse;
+      res.json({ success: true, models });
+    } catch (error) {
+      console.error('Gemini model list error:', error);
+      const message = error && error.message ? error.message : 'Failed to list Gemini models';
+      res.status(500).json({ error: message });
+    }
+  });
+
   app.get('/api/matches', async (req, res) => {
     try {
       const { type } = req.query; // 'live' or date
