@@ -38,7 +38,7 @@ describe('AI backend API', () => {
 
   it('falls back to the next supported Gemini model when one model is unavailable', async () => {
     mockGenerateContent.mockImplementation(async ({ model }) => {
-      if (model === 'gemini-3-pro-preview') {
+      if (model === 'gemini-1.0') {
         const error = new Error('This model is not available');
         error.status = 404;
         throw error;
@@ -48,6 +48,6 @@ describe('AI backend API', () => {
 
     const response = await supertest(app).post('/api/chat').send({ prompt: 'Hello' });
     expect(response.status).toBe(200);
-    expect(response.body.response).toBe('Response from gemini-3.1-pro-preview');
+    expect(response.body.response).toBe('Response from gemini-3-pro-preview');
   });
 });

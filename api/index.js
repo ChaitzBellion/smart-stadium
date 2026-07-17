@@ -8,6 +8,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const DEFAULT_GEMINI_MODELS = [
+  'gemini-1.0',
   'gemini-3-pro-preview',
   'gemini-3.1-pro-preview',
   'gemini-2.5-pro',
@@ -27,7 +28,9 @@ function createApp({ apiKey = process.env.GEMINI_API_KEY, geminiModel = process.
 
   async function generateContentWithFallback(prompt) {
     const requestedModel = geminiModel;
-    const models = requestedModel ? [requestedModel] : DEFAULT_GEMINI_MODELS;
+    const models = requestedModel
+      ? [requestedModel, ...DEFAULT_GEMINI_MODELS.filter((m) => m !== requestedModel)]
+      : DEFAULT_GEMINI_MODELS;
     let lastError = null;
 
     for (const modelName of models) {
@@ -51,8 +54,6 @@ function createApp({ apiKey = process.env.GEMINI_API_KEY, geminiModel = process.
         }
 
         console.warn(`[AI Backend] Model ${modelName} unavailable or quota exceeded, trying next fallback model. Error: ${message}`);
-
-        console.warn(`[AI Backend] Model ${modelName} unavailable, trying next fallback model. Error: ${message}`);
       }
     }
 
