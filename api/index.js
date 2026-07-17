@@ -90,8 +90,12 @@ function createApp({ apiKey = process.env.GEMINI_API_KEY, geminiModel = process.
     }
 
     try {
-      const listResponse = await ai.models.listModels();
-      const models = Array.isArray(listResponse.models) ? listResponse.models : listResponse;
+      const listResponse = await ai.models.list();
+      const models = Array.isArray(listResponse.models)
+        ? listResponse.models
+        : Array.isArray(listResponse)
+          ? listResponse
+          : listResponse;
       res.json({ success: true, models });
     } catch (error) {
       console.error('Gemini model list error:', error);

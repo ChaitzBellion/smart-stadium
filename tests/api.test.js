@@ -8,7 +8,7 @@ vi.mock('@google/genai', () => ({
   GoogleGenAI: vi.fn(() => ({
     models: {
       generateContent: mockGenerateContent,
-      listModels: mockListModels,
+      list: mockListModels,
     },
   })),
 }));
@@ -23,7 +23,7 @@ describe('AI backend API', () => {
     const imported = await import('../api/index.js');
     const apiModule = imported.default || imported;
     const createApp = apiModule.createApp || apiModule;
-    app = createApp({ apiKey: 'test-key', genAI: class { constructor() { return { models: { generateContent: mockGenerateContent, listModels: mockListModels } }; } } });
+    app = createApp({ apiKey: 'test-key', genAI: class { constructor() { return { models: { generateContent: mockGenerateContent, list: mockListModels } }; } } });
   });
 
   it('returns 400 when prompt is missing', async () => {
