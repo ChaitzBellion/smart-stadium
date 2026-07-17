@@ -20,6 +20,42 @@ if (!apiKey) {
   console.warn('[AI Backend] GEMINI_API_KEY is not configured. /api/chat requests will fail until the environment variable is set.');
 }
 
+const DEFAULT_GEMINI_MODELS = [
+  'gemini-3-pro-preview',
+  'gemini-3.1-pro-preview',
+  'gemini-2.5-pro'
+];
+
+async function generateContentWithFallback(prompt) {
+  const requestedModel = process.env.GEMINI_MODEL;
+  const models = requestedModel ? [requestedModel] : DEFAULT_GEMINI_MODELS;
+  let lastError = null;
+
+  for (const modelName of models) {
+    try {
+      console.info(`[AI Backend] Trying Gemini model: ${modelName}`);
+      const result = await ai.models.generateContent({
+        model: modelName,
+        contents: prompt,
+      });
+      return result.text;
+    } catch (error) {
+      lastError = error;
+      const code = error && (error.status || (error.error && error.error.code));
+      const message = error && error.message ? error.message : '';
+      const modelUnavailable = code === 404 || /not available/i.test(message) || /is not found/i.test(message);
+
+      if (requestedModel || !modelUnavailable) {
+        throw error;
+      }
+
+      console.warn(`[AI Backend] Model ${modelName} unavailable, trying next fallback model. Error: ${message}`);
+    }
+  }
+
+  throw lastError || new Error('No compatible Gemini model available.');
+}
+
 app.post('/api/chat', async (req, res) => {
   try {
     const { prompt } = req.body;
@@ -32,15 +68,10 @@ app.post('/api/chat', async (req, res) => {
       return res.status(500).json({ error: 'GEMINI_API_KEY is not configured in environment' });
     }
 
-    // Default to a model supported by your current quota report.
-    const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-    const result = await ai.models.generateContent({
-      model: modelName,
-      contents: prompt,
-    });
+    const responseText = await generateContentWithFallback(prompt);
     res.json({
       success: true,
-      response: result.text,
+      response: responseText,
     });
   } catch (error) {
     console.error('Gemini API Error:', error);
