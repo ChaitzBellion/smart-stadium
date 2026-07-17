@@ -89,19 +89,16 @@ smart-stadium/
 
 ### Core Design System
 
-#### [NEW] [design-system.css](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/css/design-system.css)
 - FIFA-inspired color palette (deep navy `#1a0a2e`, magenta accent `#e94560`, teal `#00d2ff`, gold `#ffd700`)
 - CSS custom properties for all design tokens (colors, spacing, typography, shadows, radii)
 - Google Font: **Inter** for UI, **Outfit** for headings
 - Fluid typography with `clamp()`
 - Dark mode as default with optional light mode toggle
 
-#### [NEW] [layout.css](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/css/layout.css)
 - CSS Grid-based responsive dashboard layout
 - Sidebar navigation with icon + text, collapsible on mobile
 - Breakpoints: mobile (< 768px), tablet (768–1024px), desktop (> 1024px)
 
-#### [NEW] [components.css](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/css/components.css)
 - Glassmorphism cards with `backdrop-filter`
 - Animated KPI counters
 - Chat bubbles with typing indicator animation
@@ -109,7 +106,6 @@ smart-stadium/
 - Progress bars and gauges
 - Micro-animation keyframes (fade, slide, pulse, shimmer)
 
-#### [NEW] [accessibility.css](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/css/accessibility.css)
 - `:focus-visible` rings on all interactive elements
 - `prefers-reduced-motion` media query to disable animations
 - `prefers-contrast` support for high-contrast mode
@@ -119,30 +115,24 @@ smart-stadium/
 ---
 
 ### Core Services
-
-#### [NEW] [data-service.js](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/js/services/data-service.js)
 - Realistic FIFA World Cup 2026 match data (16 venues across US, Mexico, Canada)
 - Live-updating crowd density simulation (using `setInterval` + randomized fluctuation)
 - Venue facility status (gates, concessions, medical, security)
 - Historical crowd flow patterns for prediction
 
-#### [NEW] [ai-service.js](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/js/services/ai-service.js)
 - Intent classification engine (keyword + pattern matching)
 - Supported intents: wayfinding, food recommendations, match info, crowd alerts, accessibility help, emergency procedures, weather, transport
 - Streaming-style response simulation (character-by-character with delay)
 - Context-aware follow-up handling
 - Response templates with dynamic data injection
 
-#### [NEW] [event-bus.js](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/js/services/event-bus.js)
 - Publish/Subscribe pattern for decoupled module communication
 - Events: `crowd:update`, `match:update`, `alert:new`, `venue:status`, `ai:response`
 
-#### [NEW] [state-manager.js](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/js/services/state-manager.js)
 - Centralized immutable state store
 - Reactive subscriptions (notify on change)
 - State slices for each module
 
-#### [NEW] [security.js](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/js/services/security.js)
 - HTML entity encoding for user inputs
 - URL sanitization
 - Rate limiter for AI chat input
@@ -152,7 +142,6 @@ smart-stadium/
 
 ### Feature Modules
 
-#### [NEW] [dashboard.js](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/js/modules/dashboard.js)
 **Real-time Operations Dashboard**
 - KPI cards: Total attendance, active venues, security alerts, fan satisfaction score
 - Live crowd density chart (canvas-based line chart)
@@ -160,7 +149,6 @@ smart-stadium/
 - Recent alerts feed with severity levels
 - Quick-action buttons for emergency protocols
 
-#### [NEW] [ai-assistant.js](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/js/modules/ai-assistant.js)
 **GenAI-Powered Chatbot**
 - Chat interface with streaming responses
 - Suggested quick-action chips (e.g., "Find nearest restroom", "Match schedule today", "Food near Gate 7")
@@ -168,7 +156,6 @@ smart-stadium/
 - Response cards with structured data (match cards, venue maps, food menus)
 - Voice-input button (Web Speech API where supported)
 
-#### [NEW] [match-center.js](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/js/modules/match-center.js)
 **Tournament Operations Hub**
 - Match schedule with group/knockout phase filtering
 - Live score cards with minute-by-minute updates (simulated)
@@ -176,7 +163,6 @@ smart-stadium/
 - Venue assignment matrix
 - Match-day countdown timers
 
-#### [NEW] [crowd-analytics.js](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/js/modules/crowd-analytics.js)
 **Intelligent Crowd Management**
 - Canvas-rendered crowd density heatmap
 - Zone-by-zone capacity gauges
@@ -184,7 +170,6 @@ smart-stadium/
 - Predictive crowd surge warnings
 - Historical comparison overlays
 
-#### [NEW] [venue-ops.js](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/js/modules/venue-ops.js)
 **Venue & Facility Management**
 - 16 FIFA 2026 venues with real names and capacities
 - Facility status dashboard (HVAC, lighting, security, medical)
@@ -192,7 +177,6 @@ smart-stadium/
 - Resource allocation optimizer
 - Staff deployment overview
 
-#### [NEW] [fan-experience.js](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/js/modules/fan-experience.js)
 **Fan-Facing Services**
 - Interactive wayfinding with landmark-based directions
 - Food & beverage ordering with wait-time estimates
@@ -204,18 +188,15 @@ smart-stadium/
 
 ### Shared Components
 
-#### [NEW] [chart.js](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/js/components/chart.js)
 - Pure Canvas API charting — no external libraries
 - Line, bar, doughnut, and gauge chart types
 - Animated drawing with `requestAnimationFrame`
 - Responsive resizing via `ResizeObserver`
 - Accessible: provides `aria-label` and data table fallback
 
-#### [NEW] [modal.js](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/js/components/modal.js)
 - Focus trap, `Escape` to close, restore focus on dismiss
 - ARIA `role="dialog"`, `aria-modal="true"`, `aria-labelledby`
 
-#### [NEW] [toast.js](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/js/components/toast.js)
 - `aria-live="polite"` region for screen readers
 - Auto-dismiss with configurable duration
 - Severity levels: info, success, warning, error
@@ -224,8 +205,6 @@ smart-stadium/
 
 ### Testing
 
-#### [NEW] [test-runner.html](file:///C:/Users/HP/.gemini/antigravity/scratch/smart-stadium/tests/test-runner.html)
-- Built-in browser test suite (no npm/dependencies)
 - Tests for: data-service, ai-service (intent detection), security (sanitization), state-manager, formatters, validators
 - Assertion helpers (`assertEqual`, `assertThrows`, `assertContains`)
 - Visual test report with pass/fail counts
@@ -235,10 +214,8 @@ smart-stadium/
 ## User Review Required
 
 > [!IMPORTANT]
-> **No Backend / No Real AI API**: This app simulates GenAI responses with a sophisticated rule-based engine. The chat feels like AI but runs entirely client-side. If you want real API integration (e.g., Gemini API), please let me know and provide an API key.
+> **Gemini AI API is used**: This app simulates GenAI responses with a sophisticated rule-based engine. and used the API-FOOTBALL API to generate the match details lively
 
-> [!NOTE]
-> **Data is Simulated**: Match scores, crowd density, and venue stats use realistic but simulated data that updates in real-time to demonstrate the operational monitoring capabilities.
 
 ## Open Questions
 
@@ -247,18 +224,3 @@ smart-stadium/
 3. **Do you want a light/dark mode toggle**, or should the app be dark-mode only (dark mode is more premium for operations dashboards)?
 
 ---
-
-## Verification Plan
-
-### Automated Tests
-- Open `tests/test-runner.html` in browser — all tests should pass (green)
-- Tests cover: input sanitization, AI intent detection, data transformations, state management
-
-### Manual Verification
-- Open `index.html` in browser — full app loads with no console errors
-- Navigate all 6 sections via sidebar
-- Test AI chatbot with various queries
-- Verify keyboard-only navigation (Tab through all interactive elements)
-- Test with screen reader (Narrator on Windows)
-- Resize browser to verify responsive design at all breakpoints
-- Check `prefers-reduced-motion` with OS setting
