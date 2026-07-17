@@ -8,9 +8,12 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const DEFAULT_GEMINI_MODELS = [
-  'gemini-1.0',
-  'gemini-3-pro-preview',
+  'gemini-flash-latest',
+  'gemini-pro-latest',
+  'gemini-3.5-flash',
+  'gemini-3.1-flash-lite',
   'gemini-3.1-pro-preview',
+  'gemini-3-pro-preview',
   'gemini-2.5-pro',
   'gemini-2.5-flash'
 ];
@@ -24,6 +27,19 @@ function createApp({ apiKey = process.env.GEMINI_API_KEY, geminiModel = process.
 
   if (!apiKey) {
     console.warn('[AI Backend] GEMINI_API_KEY is not configured. /api/chat requests will fail until the environment variable is set.');
+  }
+
+  function normalizeModelsResponse(response) {
+    if (Array.isArray(response)) {
+      return response;
+    }
+    if (Array.isArray(response.models)) {
+      return response.models;
+    }
+    if (Array.isArray(response.pageInternal)) {
+      return response.pageInternal;
+    }
+    return [response];
   }
 
   async function generateContentWithFallback(prompt) {
@@ -91,12 +107,9 @@ function createApp({ apiKey = process.env.GEMINI_API_KEY, geminiModel = process.
 
     try {
       const listResponse = await ai.models.list();
-      const models = Array.isArray(listResponse.models)
-        ? listResponse.models
-        : Array.isArray(listResponse)
-          ? listResponse
-          : listResponse;
-      res.json({ success: true, models });
+      const models = normalizeModelsResponse(listResponse);
+      const modelNames = models.map((model) => model && model.name ? model.name : model);
+      res.json({ success: true, models, modelNames });
     } catch (error) {
       console.error('Gemini model list error:', error);
       const message = error && error.message ? error.message : 'Failed to list Gemini models';
