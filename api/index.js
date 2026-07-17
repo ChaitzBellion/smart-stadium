@@ -100,6 +100,7 @@ function createApp({ apiKey = process.env.GEMINI_API_KEY, geminiModel = process.
 }
 
 const app = createApp();
+app.createApp = createApp;
 
 // Start local server if NOT running on Vercel
 if (require.main === module) {
@@ -111,4 +112,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { app, createApp };
+module.exports = app;
