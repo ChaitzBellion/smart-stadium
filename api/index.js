@@ -23,11 +23,11 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'Prompt is required' });
     }
 
-    const result = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
+  const modelName = process.env.GEMINI_MODEL || 'gemini-1.5-pro';
+  const result = await ai.models.generateContent({
+    model: modelName,
     contents: prompt,
-  });
-  res.json({
+  });  res.json({
     success: true,
     response: result.text,
   });
