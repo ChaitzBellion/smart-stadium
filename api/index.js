@@ -10,7 +10,8 @@ if (process.env.NODE_ENV !== 'production') {
 const DEFAULT_GEMINI_MODELS = [
   'gemini-3-pro-preview',
   'gemini-3.1-pro-preview',
-  'gemini-2.5-pro'
+  'gemini-2.5-pro',
+  'gemini-2.5-flash'
 ];
 
 function createApp({ apiKey = process.env.GEMINI_API_KEY, geminiModel = process.env.GEMINI_MODEL, genAI = GoogleGenAI } = {}) {
@@ -42,10 +43,14 @@ function createApp({ apiKey = process.env.GEMINI_API_KEY, geminiModel = process.
         const code = error && (error.status || (error.error && error.error.code));
         const message = error && error.message ? error.message : '';
         const modelUnavailable = code === 404 || /not available/i.test(message) || /is not found/i.test(message);
+        const quotaExceeded = code === 429 || /quota exceeded/i.test(message) || /rate limit/i.test(message);
+        const shouldFallback = modelUnavailable || quotaExceeded;
 
-        if (requestedModel || !modelUnavailable) {
+        if (!shouldFallback) {
           throw error;
         }
+
+        console.warn(`[AI Backend] Model ${modelName} unavailable or quota exceeded, trying next fallback model. Error: ${message}`);
 
         console.warn(`[AI Backend] Model ${modelName} unavailable, trying next fallback model. Error: ${message}`);
       }
