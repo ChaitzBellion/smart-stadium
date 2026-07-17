@@ -11,9 +11,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const apiKey = process.env.GEMINI_API_KEY;
 const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
+    apiKey,
 });
+
+if (!apiKey) {
+  console.warn('[AI Backend] GEMINI_API_KEY is not configured. /api/chat requests will fail until the environment variable is set.');
+}
 
 app.post('/api/chat', async (req, res) => {
   try {
@@ -23,17 +28,23 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'Prompt is required' });
     }
 
-  const modelName = process.env.GEMINI_MODEL || 'gemini-1.5-pro';
-  const result = await ai.models.generateContent({
-    model: modelName,
-    contents: prompt,
-  });  res.json({
-    success: true,
-    response: result.text,
-  });
+    if (!apiKey) {
+      return res.status(500).json({ error: 'GEMINI_API_KEY is not configured in environment' });
+    }
+
+    const modelName = process.env.GEMINI_MODEL || 'gemini-1.5-pro';
+    const result = await ai.models.generateContent({
+      model: modelName,
+      contents: prompt,
+    });
+    res.json({
+      success: true,
+      response: result.text,
+    });
   } catch (error) {
     console.error('Gemini API Error:', error);
-    res.status(500).json({ error: 'Failed to fetch AI response' });
+    const message = error && error.message ? error.message : 'Failed to fetch AI response';
+    res.status(500).json({ error: message });
   }
 });
 

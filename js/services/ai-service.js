@@ -147,11 +147,18 @@ export const AIService = {
         body: JSON.stringify({ prompt: fullPrompt })
       });
       
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
       }
       
-      const data = await response.json();
+      if (!response.ok) {
+        const message = data && data.error ? data.error : `HTTP error ${response.status}`;
+        throw new Error(message);
+      }
+      
       let text = data.response;
       
       // Format response slightly for HTML
@@ -160,8 +167,9 @@ export const AIService = {
       return { response: text, suggestions };
     } catch (e) {
       console.error("AI Fetch Error:", e);
+      const details = e && e.message ? ` (${e.message})` : '';
       return {
-        response: "I'm having trouble connecting to the backend AI service right now. Make sure the local API server is running or deploy the app to Vercel.",
+        response: `I'm having trouble connecting to the backend AI service right now${details}. Make sure the local API server is running or deploy the app to Vercel.`,
         suggestions
       };
     }
