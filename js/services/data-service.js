@@ -1275,6 +1275,111 @@ export const DataService = {
     return computeDashboardStats();
   },
 
+  async fetchDashboard() {
+    const baseUrl = window.location.protocol === 'file:'
+      ? 'http://127.0.0.1:3000'
+      : window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? window.location.origin
+        : '';
+
+    try {
+      const response = await fetch(`${baseUrl}/api/dashboard`);
+      const data = await response.json();
+      if (response.ok && data && data.success) {
+        return data;
+      }
+    } catch (err) {
+      console.error('Dashboard fetch failed', err);
+    }
+    return { success: false, dashboard: this.getDashboardStats() };
+  },
+
+  async fetchCrowdData(venueId) {
+    const baseUrl = window.location.protocol === 'file:'
+      ? 'http://127.0.0.1:3000'
+      : window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? window.location.origin
+        : '';
+
+    try {
+      const response = await fetch(`${baseUrl}/api/crowd?venueId=${encodeURIComponent(venueId)}`);
+      const data = await response.json();
+      if (response.ok && data && data.success) {
+        return data.crowd;
+      }
+    } catch (err) {
+      console.error('Crowd fetch failed', err);
+    }
+    return this.getCrowdData(venueId);
+  },
+
+  async fetchAlerts(filter = {}) {
+    const baseUrl = window.location.protocol === 'file:'
+      ? 'http://127.0.0.1:3000'
+      : window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? window.location.origin
+        : '';
+
+    let query = '';
+    if (filter.venue) {
+      query = `?venueId=${encodeURIComponent(filter.venue)}`;
+    }
+
+    try {
+      const response = await fetch(`${baseUrl}/api/alerts${query}`);
+      const data = await response.json();
+      if (response.ok && data && data.success) {
+        return data.alerts;
+      }
+    } catch (err) {
+      console.error('Alerts fetch failed', err);
+    }
+    return this.getAlerts(filter);
+  },
+
+  async fetchVenues() {
+    const baseUrl = window.location.protocol === 'file:'
+      ? 'http://127.0.0.1:3000'
+      : window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? window.location.origin
+        : '';
+
+    try {
+      const response = await fetch(`${baseUrl}/api/venues`);
+      const data = await response.json();
+      if (response.ok && data && data.success) {
+        return data.venues;
+      }
+    } catch (err) {
+      console.error('Venues fetch failed', err);
+    }
+    return this.getVenues();
+  },
+
+  async fetchFoodOptions(venueId) {
+    const baseUrl = window.location.protocol === 'file:'
+      ? 'http://127.0.0.1:3000'
+      : window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? window.location.origin
+        : '';
+
+    let query = '';
+    if (venueId) {
+      query = `?venueId=${encodeURIComponent(venueId)}`;
+    }
+
+    try {
+      const response = await fetch(`${baseUrl}/api/food${query}`);
+      const data = await response.json();
+      if (response.ok && data && data.success) {
+        return data.food;
+      }
+    } catch (err) {
+      console.error('Food fetch failed', err);
+    }
+    return this.getFoodOptions(venueId);
+  },
+
   /* ── Venue Status ───────────────────────────────────── */
 
   /**
