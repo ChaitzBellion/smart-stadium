@@ -331,13 +331,25 @@ function createApp({ apiKey = process.env.GEMINI_API_KEY, geminiModel = process.
 
   app.get('/api/matches', async (req, res) => {
     try {
+      const apiSportsKey =
+        process.env.API_SPORTS_KEY ||
+        process.env.API_FOOTBALL_KEY ||
+        process.env.API_FOOTBALL_API_KEY;
+
+      if (!apiSportsKey) {
+        return res.status(500).json({
+          error:
+            'API Sports key is not configured. Set API_SPORTS_KEY or API_FOOTBALL_KEY.',
+        });
+      }
+
       const { type } = req.query; // 'live' or date
       const url = type === 'live'
         ? 'https://v3.football.api-sports.io/fixtures?live=all'
         : `https://v3.football.api-sports.io/fixtures?date=${type}`;
       
       const apiRes = await fetch(url, {
-        headers: { 'x-apisports-key': process.env.API_SPORTS_KEY }
+        headers: { 'x-apisports-key': apiSportsKey }
       });
       const data = await apiRes.json();
       res.json(data);

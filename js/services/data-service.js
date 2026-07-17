@@ -642,6 +642,72 @@ let alertIntervalId = null;
 /** Auto-incrementing alert counter. */
 let alertCounter = ALERTS.length;
 
+/**
+ * Parse a match's local start time as a Date.
+ * @param {Object} match
+ * @returns {Date|null}
+ */
+function getMatchStartDate(match) {
+  if (!match || !match.date || !match.time) return null;
+  const parsed = new Date(`${match.date}T${match.time}:00Z`);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+/**
+ * Compute the normalized status for a match based on its scheduled time.
+ * @param {Object} match
+ * @returns {'live'|'upcoming'|'completed'}
+ */
+function computeMatchStatus(match) {
+  const startDate = getMatchStartDate(match);
+  if (!startDate) {
+    return match.status || 'upcoming';
+  }
+
+  const now = new Date();
+  const endDate = new Date(startDate.getTime() + 105 * 60 * 1000);
+  if (now >= startDate && now <= endDate) {
+    return 'live';
+  }
+  return now < startDate ? 'upcoming' : 'completed';
+}
+
+/**
+ * Normalize match object fields for current time and simulation state.
+ * @param {Object} match
+ * @returns {Object}
+ */
+function normalizeMatch(match) {
+  const normalized = clone(match);
+  const status = computeMatchStatus(match);
+  normalized.status = status;
+
+  const startDate = getMatchStartDate(match);
+  if (status === 'live') {
+    if (startDate) {
+      const elapsed = Math.floor((Date.now() - startDate.getTime()) / 60000);
+      normalized.minute = Math.min(90, Math.max(1, elapsed));
+    } else if (normalized.minute == null) {
+      normalized.minute = 1;
+    }
+  } else if (status === 'completed') {
+    normalized.minute = 90;
+  } else {
+    normalized.minute = null;
+  }
+
+  return normalized;
+}
+
+/**
+ * Normalize an array of matches.
+ * @param {Object[]} matches
+ * @returns {Object[]}
+ */
+function normalizeMatches(matches) {
+  return matches.map(normalizeMatch);
+}
+
 /* ================================================================
    CROWD DATA GENERATOR
    ================================================================ */
@@ -671,7 +737,7 @@ function generateCrowdData(venueId) {
 
   // Base attendance: 70-95% of capacity for venues hosting live matches
   const liveAtVenue = matchesState.some(
-    (m) => m.venueId === venueId && m.status === 'live'
+    (m) => m.venueId === venueId && computeMatchStatus(m) === 'live'
   );
   const basePct = liveAtVenue
     ? 0.78 + Math.random() * 0.17 // 78-95%
@@ -867,18 +933,19 @@ function generateVenueStatus(venueId) {
  * }}
  */
 function computeDashboardStats() {
-  const liveMatches = matchesState.filter((m) => m.status === 'live');
-  const completedMatches = matchesState.filter((m) => m.status === 'completed');
-  const upcomingMatches = matchesState.filter((m) => m.status === 'upcoming');
+  const normalizedMatches = normalizeMatches(matchesState);
+  const liveMatches = normalizedMatches.filter((m) => m.status === 'live');
+  const completedMatches = normalizedMatches.filter((m) => m.status === 'completed');
+  const upcomingMatches = normalizedMatches.filter((m) => m.status === 'upcoming');
 
-  const totalGoals = matchesState.reduce(
+  const totalGoals = normalizedMatches.reduce(
     (sum, m) => sum + m.score.home + m.score.away,
     0
   );
 
-  // Venues with a live or today's completed match
+  // Venues with an active live match
   const activeVenueIds = new Set(
-    matchesState
+    normalizedMatches
       .filter((m) => m.status === 'live')
       .map((m) => m.venueId)
   );
@@ -1050,7 +1117,7 @@ function finalizeMatchStandings(match) {
 function tickCrowd() {
   const liveVenueIds = [
     ...new Set(
-      matchesState.filter((m) => m.status === 'live').map((m) => m.venueId)
+      normalizeMatches(matchesState).filter((m) => m.status === 'live').map((m) => m.venueId)
     )
   ];
 
@@ -1092,7 +1159,7 @@ function tickAlerts() {
 
   const template =
     ALERT_TEMPLATES[Math.floor(Math.random() * ALERT_TEMPLATES.length)];
-  const liveVenueIds = matchesState
+  const liveVenueIds = normalizeMatches(matchesState)
     .filter((m) => m.status === 'live')
     .map((m) => m.venueId);
   const venueId =
@@ -1165,7 +1232,7 @@ export const DataService = {
    * @returns {Match[]}
    */
   getMatches(filter = {}) {
-    let result = matchesState;
+    let result = normalizeMatches(matchesState);
 
     if (filter.status) {
       result = result.filter((m) => m.status === filter.status);
@@ -1190,7 +1257,7 @@ export const DataService = {
    */
   getMatch(id) {
     const m = matchesState.find((match) => match.id === id);
-    return m ? clone(m) : null;
+    return m ? normalizeMatch(m) : null;
   },
 
   /* ── Standings queries ───────────────────────────────── */
