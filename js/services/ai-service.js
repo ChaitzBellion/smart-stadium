@@ -131,11 +131,16 @@ export const AIService = {
     const fullPrompt = `You are the FIFA World Cup 2026 Smart Stadium Assistant. Keep your answer under 3 sentences. Be helpful and use emojis. Respond to this: ${userMessage}`;
     
     try {
-      // Determine if we are running locally or on Vercel
-      const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-        ? 'http://localhost:3000' 
-        : '';
-        
+      // Choose the correct backend URL for the environment.
+      // - When served from a file URI, assume the local Node server is running on port 3000.
+      // - When served from localhost, use the current origin.
+      // - When deployed, use the relative API route.
+      const baseUrl = window.location.protocol === 'file:'
+        ? 'http://127.0.0.1:3000'
+        : window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+          ? window.location.origin
+          : '';
+
       const response = await fetch(`${baseUrl}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -155,9 +160,9 @@ export const AIService = {
       return { response: text, suggestions };
     } catch (e) {
       console.error("AI Fetch Error:", e);
-      return { 
-        response: "I'm having trouble connecting to my backend AI network right now, but I'm still your Smart Stadium Assistant! How can I help you?", 
-        suggestions 
+      return {
+        response: "I'm having trouble connecting to the backend AI service right now. Make sure the local API server is running or deploy the app to Vercel.",
+        suggestions
       };
     }
   }
